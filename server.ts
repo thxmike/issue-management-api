@@ -158,7 +158,7 @@ let start = () => {
       const comment_controller = new CommentController(
         "comment",
         app,
-        express.Router(),
+        express.Router({ "mergeParams": true }),
         application_root,
         version,
         mongo_setup_service.director.comment_model_manager,
