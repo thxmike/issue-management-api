@@ -1,0 +1,348 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "0.1.0",
+    "title": "issue-management-api",
+    "description": "An api to allow management of Issues within Florence Healthcare. This features basic CRUD operations for Issues.",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://localhost:3000",
+      "description": "local development",
+      "variables": {
+        "protocol": {
+          "enum": [
+            "http"
+          ],
+          "default": "http"
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "name": "Issue Management",
+      "description": "API for Issue Management"
+    }
+  ],
+  "paths": {
+    "/api/v1/issues": {
+      "post": {
+        "tags": [
+          "Issues"
+        ],
+        "summary": "Creates new issue in the issue-management-api system",
+        "description": "This provides the ability to create a new tenent",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/IssuePostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "This response includes the referenceId whis is the consumers unique identifier, the order id which is can be used in instance requests and the creation date time",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssuePostResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "This is identified as a request that is malformed. This is typically a malformed payload.",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          },
+          "409": {
+            "description": "This is identified as a request already received by the system",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Issues"
+        ],
+        "summary": "This gives the consumer the ability to get a collection of issues from the system",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "description": "The zero based page number of the collection of orders in your request. If a page goes beyond the collection size, No records will be returned.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "per_page",
+            "description": "The number of orders to view in the response with a maximum of 200. If a number above 200 is used only 200 will be used in the response",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "filter",
+            "description": "a customizable filter that can be applied to your collection",
+            "example": "filter={'id':'ABC123'}",
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Collection of issues",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueGetAggregationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          }
+        }
+      }
+    },
+    "/api/v1/issues/{issue_id}": {
+      "parameters": [
+        {
+          "name": "issue_id",
+          "in": "path",
+          "required": true,
+          "description": "ID of issue that we want to query",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Issues"
+        ],
+        "summary": "Gets and existing issue details based on a given issue id",
+        "responses": {
+          "200": {
+            "description": "The Issue Detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssuesGetInstanceResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Issues"
+        ],
+        "summary": "Updates an existing issue details based on a given issue id",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssuesPatchDeleteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The Updated Issue Detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueGetInstanceResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Issues"
+        ],
+        "summary": "Soft Deletes an existing issue based on a given issue id",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssuePatchDeleteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The Updated Issue Detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueGetInstanceResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "IssuePostRequest": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "uniqueItems": true,
+            "description": "A user friendly unique identifier to identify the tenant"
+          },
+          "name": {
+            "type": "string",
+            "uniqueItems": true,
+            "description": "The name of the tenant"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the tenant"
+          },
+          "website": {
+            "type": "string",
+            "description": "A website uri associated ot the tenant"
+          },
+          "status": {
+            "type": "string",
+            "description": "Provides a status associated to the tenant",
+            "enum": [
+              "new",
+              "active",
+              "retired"
+            ]
+          }
+        }
+      },
+      "IssuePostResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "timestamps": {
+            "deleted": { 
+              "type": "date"
+            },
+            "created": {
+              "type": "date"
+            },
+            "updated": {
+              "type":"date"
+            }
+          }
+        }
+      },
+      "IssueGetInstanceResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "timestamps": {
+            "deleted": { 
+              "type": "date"
+            },
+            "created": {
+              "type": "date"
+            },
+            "updated": {
+              "type":"date"
+            }
+          }
+        }
+      },
+      "IssueGetAggregationResponse": {
+        "type": "array",
+        "items": {
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "code": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "IssuePatchDeleteRequest": {
+        "type": "object",
+        "required": [
+          "nonce"
+        ],
+        "properties": {
+          "nonce": {
+            "type": "string",
+            "uniqueItems": true,
+            "description": "Used to prevent concurrency collisions. This a timestamped value must be the latest for each update or delete that can be used to update the system. Having a payload in the DELETE verb breaks the open-api 3 spec but in this case serves as an update since it is a soft delete"
+          }
+        }
+      }
+    }
+  }
+}

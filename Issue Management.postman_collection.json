@@ -1,0 +1,311 @@
+{
+	"info": {
+		"_postman_id": "4ec06e35-df3f-4333-a9e7-ba6533a21f1d",
+		"name": "Issue Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Issues",
+			"item": [
+				{
+					"name": "CREATE Issue",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"ISS001\",\r\n    \"context_id\":\"00000000-6157-580b-0a37-5d346cc08c1a\",\r\n    \"name\": \"My Login is not working\",\r\n    \"description\": \"I am having trouble logging into the system at this time and need assistance\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/api/v1/issues",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"issues"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Issues",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{uri}}/api/v1/issues",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"issues"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Issue",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{uri}}/api/v1/issues/00000000-615b-30a4-41f0-4f66d4e2564f",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"issues",
+								"00000000-615b-30a4-41f0-4f66d4e2564f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE Issue",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nonce\": \"615b31ce41f04f66d4e25659\",\r\n    \"comments\": [ \"00000000-615b-3a11-b1a1-7e7e5428aedf\" ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/api/v1/issues/00000000-615b-30a4-41f0-4f66d4e2564f",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"issues",
+								"00000000-615b-30a4-41f0-4f66d4e2564f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Issue",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nonce\": \"615b319d41f04f66d4e25656\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/api/v1/issues/00000000-615b-30a4-41f0-4f66d4e2564f",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"issues",
+								"00000000-615b-30a4-41f0-4f66d4e2564f"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "CREATE Issue Comment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"ISS003\",\r\n    \"context_id\":\"00000000-6157-580b-0a37-5d346cc08c1a\",\r\n    \"name\": \"Steps are not working\",\r\n    \"description\": \"I need some help\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/api/v1/issues/00000000-615b-30a4-41f0-4f66d4e2564f/comments",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"issues",
+								"00000000-615b-30a4-41f0-4f66d4e2564f",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Issue Comments",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\": \"ISS001\",\r\n    \"context_id\":\"00000000-6157-580b-0a37-5d346cc08c1a\",\r\n    \"name\": \"Try the following steps\",\r\n    \"description\": \"Step 1, Step2, Step 3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/api/v1/issues/00000000-615b-30a4-41f0-4f66d4e2564f/comments",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"issues",
+								"00000000-615b-30a4-41f0-4f66d4e2564f",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Issue Comment",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{uri}}/api/v1/issues/00000000-615b-30a4-41f0-4f66d4e2564f/comments/00000000-615b-3a11-b1a1-7e7e5428aedf",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"issues",
+								"00000000-615b-30a4-41f0-4f66d4e2564f",
+								"comments",
+								"00000000-615b-3a11-b1a1-7e7e5428aedf"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri}}/list",
+					"host": [
+						"{{uri}}"
+					],
+					"path": [
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{uri}}/health",
+					"host": [
+						"{{uri}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
