@@ -100,7 +100,7 @@
             "in": "query",
             "name": "filter",
             "description": "a customizable filter that can be applied to your collection",
-            "example": "filter={'id':'ABC123'}",
+            "example": "filter={'code':'ABC123'}",
             "schema": {
               "type": "object"
             }
@@ -165,7 +165,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/IssuesPatchDeleteRequest"
+                "$ref": "#/components/schemas/IssuePatchDeleteRequest"
               }
             }
           }
@@ -176,7 +176,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/IssueGetInstanceResponse"
+                  "$ref": "#/components/schemas/IssuesGetInstanceResponse"
                 }
               }
             }
@@ -206,10 +206,261 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/IssueGetInstanceResponse"
+                  "$ref": "#/components/schemas/IssuesGetInstanceResponse"
                 }
               }
             }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          }
+        }
+      }
+    },
+    "/api/v1/issues/{issue_id}/comments": {
+      "parameters": [
+        {
+          "name": "issue_id",
+          "in": "path",
+          "required": true,
+          "description": "ID of issue that we want to query",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Gets an existing issue detail comment based on a given issue id",
+        "responses": {
+          "200": {
+            "description": "The Issue Detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssuesGetIssueCommentCollectionResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Creates an issue comment on an issue detail based on a given issue id",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssuesGetIssueCommentPostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The Updated Issue  Detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssuesGetIssueCommentInstanceResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          }
+        }
+      }
+    },
+    "/api/v1/issues/{issue_id}/comments/{comment_id}": {
+      "parameters": [
+        {
+          "name": "issue_id",
+          "in": "path",
+          "required": true,
+          "description": "ID of issue that we want to query",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "comment_id",
+          "in": "path",
+          "required": true,
+          "description": "ID of issue comment that we want to query",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Gets and existing issue comment detail comment based on a given issue id and comment_id",
+        "responses": {
+          "200": {
+            "description": "The Issue Comment Detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssuesGetIssueCommentInstanceResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Comment"
+        ],
+        "summary": "Updates an issue comment on an issue detail based on a given issue id and comment_id",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssuesGetIssueCommentPostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The Updated Issue Comment Detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssuesGetIssueCommentPostResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          }
+        }
+      }
+    },
+    "/api/v1/issues/{issue_id}/files": {
+      "parameters": [
+        {
+          "name": "issue_id",
+          "in": "path",
+          "required": true,
+          "description": "ID of issue that we want to query",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "File"
+        ],
+        "summary": "Gets a collection of existing issue detail files meta based on a given issue id",
+        "responses": {
+          "200": {
+            "description": "The Issue Detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssuesGetIssueCommentCollectionResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "summary": "Uploads an issue file to an issue detail based on a given issue id",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssuesGetIssueCommentPostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A response indicating the file was uploaded"
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          }
+        }
+      }
+    },
+    "/api/v1/issues/{issue_id}/files/{file_id}": {
+      "parameters": [
+        {
+          "name": "issue_id",
+          "in": "path",
+          "required": true,
+          "description": "ID of issue that we want to query",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "file_id",
+          "in": "path",
+          "required": true,
+          "description": "ID of issues file that we want to query",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "File"
+        ],
+        "summary": "Gets and existing issue detail file metadata comment based on a given issue id and file_id",
+        "responses": {
+          "200": {
+            "description": "The Issue File Metadata Detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssuesGetIssueCommentInstanceResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization information is missing or invalid."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "File"
+        ],
+        "summary": "Downloads an issue file from an issue detail based on a given issue id and file_id",
+        "responses": {
+          "200": {
+            "description": "The Issue File Binary"
           },
           "401": {
             "description": "Authorization information is missing or invalid."
@@ -236,10 +487,6 @@
           "description": {
             "type": "string",
             "description": "Detailed description of the tenant"
-          },
-          "website": {
-            "type": "string",
-            "description": "A website uri associated ot the tenant"
           },
           "status": {
             "type": "string",
@@ -270,20 +517,18 @@
           "status": {
             "type": "string"
           },
+          "files": {
+            "type": "object"
+          },
+          "comments": {
+            "type": "object"
+          },
           "timestamps": {
-            "deleted": { 
-              "type": "date"
-            },
-            "created": {
-              "type": "date"
-            },
-            "updated": {
-              "type":"date"
-            }
+            "$ref": "#/components/schemas/Timestamps"
           }
         }
       },
-      "IssueGetInstanceResponse": {
+      "IssuesGetInstanceResponse": {
         "type": "object",
         "properties": {
           "id": {
@@ -301,16 +546,86 @@
           "status": {
             "type": "string"
           },
+          "files": {
+            "type": "object"
+          },
+          "comments": {
+            "type": "object"
+          },
           "timestamps": {
-            "deleted": { 
-              "type": "date"
+            "$ref": "#/components/schemas/Timestamps"
+          }
+        }
+      },
+      "IssuesGetIssueCommentCollectionResponse": {
+        "type": "array",
+        "items": {
+          "properties": {
+            "id": {
+              "type": "string"
             },
-            "created": {
-              "type": "date"
-            },
-            "updated": {
-              "type":"date"
+            "name": {
+              "type": "string"
             }
+          }
+        }
+      },
+      "IssuesGetIssueCommentPostRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "context_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "IssuesGetIssueCommentPostResponse": {
+        "type": "array",
+        "items": {
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "context_id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "timestamps": {
+              "$ref": "#/components/schemas/Timestamps"
+            }
+          }
+        }
+      },
+      "IssuesGetIssueCommentInstanceResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "context_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "timestamps": {
+            "$ref": "#/components/schemas/Timestamps"
           }
         }
       },
@@ -340,6 +655,22 @@
             "type": "string",
             "uniqueItems": true,
             "description": "Used to prevent concurrency collisions. This a timestamped value must be the latest for each update or delete that can be used to update the system. Having a payload in the DELETE verb breaks the open-api 3 spec but in this case serves as an update since it is a soft delete"
+          }
+        }
+      },
+      "Timestamps": {
+        "type": "object",
+        "items": {
+          "properties": {
+            "deleted": {
+              "type": "string"
+            },
+            "created": {
+              "type": "string"
+            },
+            "updated": {
+              "type": "string"
+            }
           }
         }
       }
