@@ -1,23 +1,24 @@
+import { ConfigurationService } from "@thxmike/configuration";
+import { ConsoleService } from "@thxmike/console-debug";
+import { AppControllerService } from "@thxmike/express-app-controller";
+import { ExpressIdentityJWTTokenLoginService } from "@thxmike/express-identity-jwt-token-login";
+import { RootController } from "@thxmike/express-root-controller";
+import { ExpressRouteLogger } from "@thxmike/express-route-logger";
+import { FileSystemService } from "@thxmike/file-system";
+import { HttpServerService } from "@thxmike/http-server";
+import { JsonMessageService } from "@thxmike/json-message";
+import { MongooseSetupService } from "@thxmike/mongoose-setup";
+import express from "express";
+import util from "util";
 
-import { ConfigurationService } from '@thxmike/configuration';
-import { ConsoleService } from '@thxmike/console-debug';
-import { AppControllerService } from '@thxmike/express-app-controller';
-import { ExpressIdentityJWTTokenLoginService } from '@thxmike/express-identity-jwt-token-login';
-import { RootController } from '@thxmike/express-root-controller';
-import { ExpressRouteLogger } from '@thxmike/express-route-logger';
-import { FileSystemService } from '@thxmike/file-system';
-import { HttpServerService } from '@thxmike/http-server';
-import { JsonMessageService } from '@thxmike/json-message';
-import { MongooseSetupService } from '@thxmike/mongoose-setup';
-import express from 'express';
-import util from 'util';
+import configuration_object from "./configuration.js";
+import { IssueController } from "./controllers/issue.js";
+import { CommentController } from "./controllers/comment.js";
+import { FileController } from "./controllers/file.js";
+import { Director } from "./models/index.js";
+import { FileManagementApiService } from "./services/file-management-api-service.js";
 
-import configuration_object from './configuration.js';
-import { IssueController } from './controllers/issue.js';
-import { CommentController } from './controllers/comment.js';
-import { Director } from './models/index.js';
-
-let app_directory = './';
+let app_directory = "./";
 
 /*
  *This serves as the systems orchestration.
@@ -73,7 +74,6 @@ let setup_root_controller = () => {
   }
 };
 
-
 let start = () => {
   console.debug("Setting up Express Web Server");
   console.debug(
@@ -83,22 +83,26 @@ let start = () => {
     }`
   );
 
-
   console.debug(
     `Using the following Identity Server: ${configuration_service.configuration.identity.iss}`
   );
 
   const message_service = new JsonMessageService();
-  
-  // Using example identity provider
-  const express_identity_token_login_service = new ExpressIdentityJWTTokenLoginService(
-    configuration_service.configuration.identity.openid_configuration_uri,
-    configuration_service.configuration.identity.jwks_oauth2_uri,
-    configuration_service.configuration.identity.introspection_uri,
-    configuration_service.configuration.identity.user_info_endpoint_uri,
-    configuration_service.configuration.identity['client-id'],
-    configuration_service.configuration.identity['client-secret']
+
+  const file_management_api_service = new FileManagementApiService(
+    configuration_service.configuration["file-management-api"].uri
   );
+
+  // Using example identity provider
+  const express_identity_token_login_service =
+    new ExpressIdentityJWTTokenLoginService(
+      configuration_service.configuration.identity.openid_configuration_uri,
+      configuration_service.configuration.identity.jwks_oauth2_uri,
+      configuration_service.configuration.identity.introspection_uri,
+      configuration_service.configuration.identity.user_info_endpoint_uri,
+      configuration_service.configuration.identity["client-id"],
+      configuration_service.configuration.identity["client-secret"]
+    );
 
   const application_root = "/api/";
   const version = "v1";
@@ -131,14 +135,16 @@ let start = () => {
     configuration_service.configuration.mongo.username,
     configuration_service.configuration.mongo.password
   );
-  
-  console.debug(`Connecting To Mongo Database Server: ${configuration_service.configuration.mongo.uri}`);
-  
+
+  console.debug(
+    `Connecting To Mongo Database Server: ${configuration_service.configuration.mongo.uri}`
+  );
+
+  mongo_setup_service.connect().then(() => {
     return http_server_service.start().then(() => {
       console.debug("Setting up RootController");
 
       setup_root_controller();
-
 
       const issue_controller = new IssueController(
         "issue",
@@ -148,29 +154,54 @@ let start = () => {
         version,
         mongo_setup_service.director.issue_model_manager,
         message_service,
-        [express_identity_token_login_service.authenticate.bind(express_identity_token_login_service),
-         ]
+        [
+          express_identity_token_login_service.authenticate.bind(
+            express_identity_token_login_service
+          ),
+        ]
       );
-      
+
       console.debug(`Setting Up ${issue_controller.constructor.name}`);
 
       //Setup Routes on Application
       const comment_controller = new CommentController(
         "comment",
         app,
-        express.Router({ "mergeParams": true }),
+        express.Router({ mergeParams: true }),
         application_root,
         version,
         mongo_setup_service.director.comment_model_manager,
         message_service,
-        [express_identity_token_login_service.authenticate.bind(express_identity_token_login_service),
-         ],
-         issue_controller
+        [
+          express_identity_token_login_service.authenticate.bind(
+            express_identity_token_login_service
+          ),
+        ],
+        issue_controller
       );
-      
+
       console.debug(`Setting Up ${comment_controller.constructor.name}`);
+
+      //Setup Routes on Application
+      const file_controller = new FileController(
+        "file",
+        app,
+        express.Router({ mergeParams: true }),
+        application_root,
+        version,
+        file_management_api_service,
+        message_service,
+        [
+          express_identity_token_login_service.authenticate.bind(
+            express_identity_token_login_service
+          ),
+        ],
+        issue_controller
+      );
+
+      console.debug(`Setting Up ${file_controller.constructor.name}`);
     });
-  
+  });
 };
 
 configuration_service

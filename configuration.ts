@@ -28,6 +28,9 @@ export default {
         "pw": "",
         "debug": true
     },
+    "file-management-api": {
+        "uri": "http://localhost:3001/api/v1"
+    },
     "swagger":{
         "file_name": "openapi.json"
     },
