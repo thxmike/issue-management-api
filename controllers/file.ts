@@ -23,22 +23,34 @@ export class FileController extends CommonController {
 
   post_aggregate_request(req: any, res: any) {
 
-    let form = new FormData();
-
-    let parts = req.baseUrl.split("/");
-    let tenant_id: any = `${parts[parts.length - 1]}`;
-   
-    form.append("content-type", "application/octet-stream");
-    form.append('file', req.file.buffer);
-
-    let headers = { ...req.headers, ...{ context_id: tenant_id}, ...form.getHeaders()};
+    //req.headers.context_id = req.headers.tenant_id
+    //res.redirect(301, 'http://localhost:3001/api/v1/files');
     
+    let { headers, file } = req;
+    headers.context_id = req.headers.tenant_id
+    const { buffer, originalname: filename, mimetype } = file;
+
+    const formData = new FormData();
     
-    this.data_service.upload(form, headers)
-        .then((response: any) => {
-            res.send(response); 
-        });
+    formData.append('file', buffer, {
+      filename: filename, contentType: mimetype
+    });
+
+    //const buff = Buffer.from(buffer);
+
+    //headers['content-type'] = mimetype;
+    headers = { ...formData.getHeaders(), ...headers, ...{ context_id: headers.tenant_id } };
+
+    this.data_service.upload( formData,
+      headers
+    ).then((response: any) => {
+      res.send(response);
+    })
+    .catch((err: Error) => {
+      res.send(err);
+    });
   }
+  
 
   post_instance_request(req: any, res: any) {
 
